@@ -31,14 +31,16 @@ services:
     depends_on:
       - elasticsearch
 
-  eureka_service:
-    container_name: eureka-service
+  eureka-server:
+    container_name: eureka-server
     build:
       context: ./EurekaServer
     ports:
-      - "8761:8761"
+      - "9000:9000"
+    environment:
+      EUREKA_URI: http://eureka-server:9000/eureka
 
-  gallery_service:
+  gallery-service:
     container_name: gallery-service
     build:
       context: ./gallery-service
@@ -47,5 +49,7 @@ services:
     volumes:
       - ./logs:/logs
     environment:
-      EUREKA_URL: http://eureka_service:8761/eureka
+      EUREKA_URI: http://eureka-server:9000/eureka
+    depends_on:
+      - eureka-server
 
